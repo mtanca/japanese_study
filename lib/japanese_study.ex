@@ -3,16 +3,32 @@ defmodule JapaneseStudy do
   Documentation for `JapaneseStudy`.
   """
 
-  @doc """
-  Hello world.
+  def run() do
+    IO.puts("What would you like to practice?")
+    IO.puts("1- numbers")
 
-  ## Examples
+    quiz_selection =
+      try do
+        input = IO.gets("") |> String.trim()
+        String.to_integer(input)
+      rescue
+        error ->
+          IO.inspect(error, label: "!!!")
+          nil
+      end
 
-      iex> JapaneseStudy.hello()
-      :world
+    if is_nil(quiz_selection) do
+      IO.puts("Not a valid selection")
+      run()
+    end
 
-  """
-  def hello do
-    :world
+    IO.puts("You selected: #{quiz_selection}")
+    do_run(quiz_selection)
+  end
+
+  defp do_run(1) do
+    {:ok, pid} = JapaneseStudy.Games.CorrectHiragana.start()
+    send(pid, :next_number)
+    IO.puts("")
   end
 end
